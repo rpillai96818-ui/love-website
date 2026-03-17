@@ -7,131 +7,229 @@
 <style>
 
 body{
-    margin:0;
-    overflow:hidden;
-    font-family:Arial, sans-serif;
-    background: linear-gradient(135deg,#ff758c,#ff7eb3);
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:white;
+margin:0;
+font-family:Arial;
+background:#000;
+color:white;
+text-align:center;
+overflow-x:hidden;
 }
 
-.container{
-    text-align:center;
-    background:rgba(0,0,0,0.3);
-    padding:40px;
-    border-radius:20px;
-    width:350px;
+/* star canvas */
+
+#stars{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
 }
+
+/* popup message */
+
+.popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+color:black;
+padding:20px;
+border-radius:10px;
+display:none;
+}
+
+/* envelope button */
 
 button{
-    padding:12px 25px;
-    font-size:16px;
-    border:none;
-    border-radius:30px;
-    background:white;
-    color:#ff4d6d;
-    cursor:pointer;
+padding:12px 20px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+margin-top:20px;
 }
 
-button:hover{
-    transform:scale(1.05);
+/* love letter modal */
+
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
 }
 
-#message{
-    margin-top:20px;
-    font-size:18px;
+.modal-content{
+background:white;
+color:black;
+width:320px;
+padding:25px;
+border-radius:10px;
+margin:120px auto;
+text-align:left;
 }
 
-.heart{
-    position:absolute;
-    color:white;
-    font-size:20px;
-    animation: float 6s linear infinite;
-}
+/* counter */
 
-@keyframes float{
-    0%{
-        transform: translateY(100vh);
-        opacity:1;
-    }
-    100%{
-        transform: translateY(-10vh);
-        opacity:0;
-    }
+.counter{
+font-size:22px;
+margin-top:30px;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="container">
+<canvas id="stars"></canvas>
 
-<h1 id="typing"></h1>
+<h1>Hey my cute baby gurl krishu ❤️</h1>
+<p>Click anywhere on the stars</p>
 
-<p>You are someone very special to me ❤️</p>
+<div class="popup" id="popup"></div>
 
-<button onclick="showLove()">Click Me</button>
+<button onclick="openLetter()">Open My Letter 💌</button>
 
-<p id="message"></p>
+<div class="modal" id="letterModal">
+
+<div class="modal-content">
+
+<h3>A Letter For You</h3>
+
+<p>
+
+I know I wasn't there when you needed me and I'm really sorry.
+
+You mean a lot to me and I never want you to feel alone.
+
+Even when we argue or misunderstand each other,
+I still choose you every single day.
+
+❤️
+
+</p>
+
+<button onclick="closeLetter()">Close</button>
+
+</div>
+
+</div>
+
+<div class="counter">
+
+<p>Time since you became special to me:</p>
+
+<div id="timer"></div>
 
 </div>
 
 <script>
 
-/* typing effect */
+/* starry sky */
 
-const text = "Hey my baby gurl krishu ❤️";
-let i = 0;
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
 
-function typeWriter(){
-    if(i < text.length){
-        document.getElementById("typing").innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typeWriter,80);
-    }
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<120;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2
+});
 }
 
-typeWriter();
+function drawStars(){
 
-/* love messages */
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-const messages = [
-"You make my life brighter.",
-"I love your smile.",
-"You mean more to me than you know.",
+ctx.fillStyle="white";
+
+stars.forEach(star=>{
+ctx.beginPath();
+ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
+ctx.fill();
+});
+
+requestAnimationFrame(drawStars);
+}
+
+drawStars();
+
+/* click star messages */
+
+const messages=[
+"You make my world brighter.",
 "I'm lucky to have you.",
-"I want to keep making you smile.",
-"Even when I mess up, I still care about you deeply."
+"You are very special to me.",
+"I love your smile.",
+"You make my days better.",
+"I always care about you.",
+"Every star reminds me of you.",
+"You make my life brighter.",
+"I feel lucky to know you.",
+"Your smile is my favorite thing.",
+"I love how caring you are.",
+"I always want to see you happy."
 ];
 
-function showLove(){
-    const random = Math.floor(Math.random()*messages.length);
-    document.getElementById("message").innerText = messages[random];
+canvas.addEventListener("click",function(){
+
+const popup=document.getElementById("popup");
+
+const random=messages[Math.floor(Math.random()*messages.length)];
+
+popup.innerText=random;
+
+popup.style.display="block";
+
+setTimeout(()=>{
+popup.style.display="none";
+},2000);
+
+});
+
+/* love letter popup */
+
+function openLetter(){
+document.getElementById("letterModal").style.display="block";
 }
 
-/* floating hearts */
-
-function createHeart(){
-
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-
-    heart.style.left = Math.random()*100 + "vw";
-    heart.style.fontSize = (Math.random()*20 + 15) + "px";
-
-    document.body.appendChild(heart);
-
-    setTimeout(()=>{
-        heart.remove();
-    },6000);
+function closeLetter(){
+document.getElementById("letterModal").style.display="none";
 }
 
-setInterval(createHeart,300);
+/* relationship counter */
+
+const startDate=new Date("2025-09-24");
+
+function updateTimer(){
+
+const now=new Date();
+
+const diff=now-startDate;
+
+const days=Math.floor(diff/(1000*60*60*24));
+const hours=Math.floor((diff/(1000*60*60))%24);
+const minutes=Math.floor((diff/(1000*60))%60);
+const seconds=Math.floor((diff/1000)%60);
+
+document.getElementById("timer").innerHTML=
+
+days+" days "+
+hours+" hours "+
+minutes+" minutes "+
+seconds+" seconds";
+
+}
+
+setInterval(updateTimer,1000);
 
 </script>
 
